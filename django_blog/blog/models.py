@@ -30,8 +30,8 @@ class Tag(models.Model):
 class Blog(models.Model):
     user = models.ForeignKey(User, related_name='blog_user', on_delete=models.CASCADE)
     category = models.ForeignKey(Category, related_name='blog_category', on_delete=models.CASCADE)
-    tag = models.ManyToManyField(Tag, related_name='blog_tag', blank=True)
-    likes = models.ForeignKey(User, related_name='user_like', on_delete=models.CASCADE)
+    tags = models.ManyToManyField(Tag, related_name='blog_tag', blank=True)
+    likes = models.ForeignKey(User, related_name='user_like', on_delete=models.CASCADE, blank=True, null=True)
     title = models.CharField(max_length=250)
     slug = models.SlugField(null=True, blank=True)
     banner = models.ImageField(upload_to="blog_banners")
