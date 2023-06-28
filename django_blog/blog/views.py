@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Blog, Tag
 from django.core.paginator import PageNotAnInteger, EmptyPage, Paginator
 # Create your views here.
@@ -22,8 +22,10 @@ def blogs(request):
         blogs = paginator.page(page)
     except EmptyPage:
         blogs = paginator.page(1)
+        return redirect('blogs')
     except PageNotAnInteger:
         blogs = paginator.page(1)
+        return redirect('blogs')
 
     context = {
         "blogs": blogs,
