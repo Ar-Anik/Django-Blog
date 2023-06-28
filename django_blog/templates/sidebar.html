@@ -16,9 +16,9 @@
                     </div>
                     <div class="content">
                         <ul>
-                            {% for blog in blogs|slice:"4" %}
+                            {% for blog in blog_recent_posts|slice:"4" %}
                                 <li><a href="#">
-                                    <h5>{{ blog.title }}</h5>
+                                    <h5>{{ blog.title|truncatechars:30 }}</h5>
                                     <span>{{ blog.created_date }}</span>
                                 </a></li>
                             {% endfor %}
