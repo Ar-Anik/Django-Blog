@@ -1,0 +1,222 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Blog Detail
+{% endblock title %}
+
+{% block content %}
+    <section class="blog-posts grid-system">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8">
+            <div class="all-blog-posts">
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="blog-post">
+                    <div class="blog-thumb">
+                      <img src="{{ blog.banner.url }}" alt="">
+                    </div>
+                    <div class="down-content">
+                      <span>{{ blog.category }}</span>
+                      <a href="javascript:void(0)"><h4>{{ blog.title }}</h4></a>
+                      <ul class="post-info">
+                        <li><a href="javascript:void(0)">{{ blog.user }}</a></li>
+                        <li><a href="javascript:void(0)">{{ blog.created_date }}</a></li>
+                        <li><a href="javascript:void(0)">{{ blog.blog_comment.all.count }} Comments</a></li>
+                      </ul>
+                      <p>{{ blog.description }}</p>
+                      <div class="post-options">
+                        <div class="row">
+                          <div class="col-6">
+                            <ul class="post-tags">
+                              {% if blog.tags.all.count > 0 %}
+                                  <li><i class="fa fa-tags"></i></li>
+                                  {% for tag in blog.tags.all %}
+                                    {% if forloop.first %}
+                                    {% else %}
+                                        ,
+                                    {% endif %}
+                                    <li><a href="{% url 'tag_blogs' tag.slug %}">{{ tag.title }}</a>,</li>
+                                  {% endfor %}
+                              {% else %}
+                                  None
+                              {% endif %}
+                            </ul>
+                          </div>
+                          <div class="col-6">
+                            <ul class="post-share">
+{#                              {% if request.user.is_authenticated %}#}
+                                  <li>{{ blog.likes.count }}</li>
+                                  <li class="pl-3 pr-3"><i class="fa fa-heart emtpy-heart"></i></li>
+                                  <li><i class="fa fa-share-alt"></i></li>
+                                  <li><a href="javascript:void(0)">Facebook</a>,</li>
+                                  <li><a href="javascript:void(0)"> Twitter</a></li>
+{#                              {% else %}#}
+{#                                  <li>{{ blog.likes.count }}</li>#}
+{#                                  <li class="pl-3 pr-3"><i class="fa fa-heart emtpy-heart"></i></li>#}
+{#                                  <li><i class="fa fa-share-alt"></i></li>#}
+{#                                  <li><a href="javascript:void(0)">Facebook</a>,</li>#}
+{#                                  <li><a href="javascript:void(0)"> Twitter</a></li>#}
+{#                              {% endif %}#}
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-lg-12">
+                  <div class="sidebar-item comments">
+                    <div class="sidebar-heading">
+                      <h2>{{ blog.blog_comment.all.count }} comments</h2>
+                    </div>
+                    <div class="content">
+                      <ul>
+                        {% for comment in blog.blog_comment.all %}
+                        <li>
+                          <div class="author-thumb">
+                            <img src="{{ comment.user.get_profile_image }}" alt="">
+                          </div>
+                          <div class="right-content">
+                            <h4>{{ comment.user.username }}<span>{{ comment.created_date }}</span></h4>
+                            <p>{{ comment.text }}</p>
+                          </div>
+                        </li>
+                        {% for reply in comment.comment_reply.all %}
+                            <li class="replied">
+                              <div class="author-thumb">
+                                <img src="{{ reply.user.get_profile_image }}" alt="">
+                              </div>
+                              <div class="right-content">
+                                <h4>{{ reply.user.username }}<span>{{ reply.created_date }}</span></h4>
+                                <p>{{ reply.text }}</p>
+                              </div>
+                            </li>
+                        {% endfor %}
+                        <li>
+                          <div class="right-content">
+                            <form id="comment" class="submit-comment my-2" action="{% url 'reply_comment' blog.id comment.id %}" method="POST">
+                            {% csrf_token %}
+                            <div class="row">
+                              <div class="col-lg-12">
+                                <fieldset>
+                                  <textarea class="submit_reply" name="text" rows="3" id="message" placeholder="Type your reply" required=""></textarea>
+                                </fieldset>
+                              </div>
+                              <div class="col-lg-12">
+                                <fieldset>
+                                  {% if request.user.is_authenticated %}
+                                   <button type="submit" id="form-submit" class="main-button">Reply</button>
+                                  {% else %}
+                                   <button id="form-submit" class="main-button">Login For Reply</button>
+                                  {% endif %}
+                                </fieldset>
+                              </div>
+                            </div>
+                          </form>
+                          </div>
+                        </li>
+                        {% endfor %}
+
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-lg-12">
+                  <div class="sidebar-item submit-comment">
+                    <div class="sidebar-heading">
+                      <h2>Your Comment</h2>
+                    </div>
+                    <div class="content">
+                      <form id="comment" action="{% url 'blog_detail' blog.slug %}" method="POST">
+                        {% csrf_token %}
+                        <div class="row">
+                          <div class="col-lg-12">
+                            <fieldset>
+                              <textarea class="comment_section" name="text" rows="3" id="message" placeholder="Type your comment" required=""></textarea>
+                            </fieldset>
+                          </div>
+                          <div class="col-lg-12">
+                            <fieldset>
+                              {% if request.user.is_authenticated %}
+                                <button type="submit" id="form-submit" class="main-button">Comment</button>
+                              {% else %}
+                                <button id="form-submit" class="main-button">Login For Comment</button>
+                              {% endif %}
+                            </fieldset>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="sidebar">
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="sidebar-item search">
+                    <form id="search_form" name="gs" method="GET" action="#">
+                      <input type="text" name="q" class="searchText" placeholder="type to search..." autocomplete="on">
+                    </form>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  <div class="sidebar-item recent-posts">
+                    <div class="sidebar-heading">
+                      <h2>Related Posts</h2>
+                    </div>
+                    <div class="content">
+                      <ul>
+                        {% for rblog in related_blogs %}
+                            {% if rblog.slug != blog.slug %}
+                              <li><a href="{% url 'blog_detail' rblog.slug %}">
+                              <h5>{{ rblog.title|truncatechars:30 }}</h5>
+                              <span>{{ rblog.created_date }}</span>
+                              </a></li>
+                            {% endif %}
+                        {% endfor %}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  <div class="sidebar-item categories">
+                    <div class="sidebar-heading">
+                      <h2>Categories</h2>
+                    </div>
+                    <div class="content">
+                      <ul>
+                        {% for category in categories|slice:"6" %}
+                            <li><a href="{% url 'category_blogs' category.slug %}">- {{ category.title }}</a></li>
+                        {% endfor %}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  <div class="sidebar-item tags">
+                    <div class="sidebar-heading">
+                      <h2>Tag Clouds</h2>
+                    </div>
+                    <div class="content">
+                      <ul>
+                        {% for tag in tags %}
+                            <li><a href="{% url 'tag_blogs' tag.slug %}">{{ tag.title }}</a></li>
+                        {% endfor %}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+{% endblock content %}

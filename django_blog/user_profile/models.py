@@ -16,3 +16,12 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
+
+    def get_profile_image(self):
+        ImageUrl = ""
+        try:
+            ImageUrl = self.profile_image.url
+        except:
+            ImageUrl = ""
+
+        return ImageUrl

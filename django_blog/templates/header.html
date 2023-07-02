@@ -25,9 +25,19 @@
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'blogs' %}">Blogs</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="post-details.html">Post Details</a>
-            </li>
+{#            <li class="nav-item">#}
+{#                <a class="nav-link" href="post-details.html">Post Details</a>#}
+{#            </li>#}
+             <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+                  Category
+                </a>
+                <div class="dropdown-menu">
+                  {% for category in categories|slice:"6" %}
+                    <a class="dropdown-item" href="{% url 'category_blogs' category.slug %}">{{ category.title }}</a>
+                  {% endfor %}
+                </div>
+             </li>
             <li class="nav-item">
                 <a class="nav-link" href="contact.html">Login</a>
             </li>

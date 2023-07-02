@@ -7,10 +7,10 @@
         </div>
         <div class="down-content">
             <span>{{ blog.blog_category.all }}</span>
-            <a href="post-details.html"><h4>{{ blog.title|truncatechars:20 }}</h4></a>
+            <a href="{% url 'blog_detail' blog.slug %}"><h4>{{ blog.title|truncatechars:20 }}</h4></a>
             <ul class="post-info">
-                <li><a href="#">{{ blog.user }}</a></li>
-                <li><a href="#">{{ blog.created_date }}</a></li>
+                <li><a href="javascript:void(0)">{{ blog.user }}</a></li>
+                <li><a href="javascript:void(0)">{{ blog.created_date }}</a></li>
             </ul>
             <p>{{ blog.description|truncatechars:90 }}</p>
             <div class="post-options">
@@ -19,7 +19,7 @@
                         <ul class="post-tags">
                         {% if blog.tags.all.count > 0 %}
                             <li><i class="fa fa-tags"></i></li>
-                            <li><a href="#">{{ blog.tags.first.title }}</a></li>
+                            <li><a href="{% url 'tag_blogs' blog.tags.first.slug %}">{{ blog.tags.first.title }}</a></li>
                             {% if blog.tags.all.count > 1 %}
                                 , ....
                             {% endif %}

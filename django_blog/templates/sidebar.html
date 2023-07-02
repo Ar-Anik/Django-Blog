@@ -16,8 +16,8 @@
                     </div>
                     <div class="content">
                         <ul>
-                            {% for blog in blog_recent_posts|slice:"4" %}
-                                <li><a href="#">
+                            {% for blog in blogs|slice:"4" %}
+                                <li><a href="{% url 'blog_detail' blog.slug %}">
                                     <h5>{{ blog.title|truncatechars:30 }}</h5>
                                     <span>{{ blog.created_date }}</span>
                                 </a></li>
@@ -34,7 +34,7 @@
                     <div class="content">
                         <ul>
                             {% for category in categories|slice:"6" %}
-                                <li><a href="#">- {{ category.title }}</a></li>
+                                <li><a href="{% url 'category_blogs' category.slug %}">- {{ category.title }}</a></li>
                             {% endfor %}
                         </ul>
                     </div>
@@ -47,8 +47,8 @@
                     </div>
                     <div class="content">
                         <ul>
-                            {% for tag in tags|slice:"6" %}
-                                <li><a href="#">{{ tag.title }}</a></li>
+                            {% for tag in tags|slice:"8" %}
+                                <li><a href="{% url 'tag_blogs' tag.slug %}">{{ tag.title }}</a></li>
                             {% endfor %}
                         </ul>
                     </div>
