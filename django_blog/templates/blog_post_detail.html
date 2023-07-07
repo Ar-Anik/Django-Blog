@@ -46,19 +46,23 @@
                           </div>
                           <div class="col-6">
                             <ul class="post-share">
-{#                              {% if request.user.is_authenticated %}#}
-                                  <li>{{ blog.likes.count }}</li>
+                              {% if request.user.is_authenticated %}
+                                  <li id="likecount">{{ blog.likes.all.count }}</li>
+                                  {% if like_by %}
+                                    <li class="pl-3 pr-3"><a href="javascript:void(0);"><i id="likeicon" data-blog="{{ blog.id }}" class="fa fa-heart"></i></a></li>
+                                  {% else %}
+                                    <li class="pl-3 pr-3"><a href="javascript:void(0);"><i id="likeicon" data-blog="{{ blog.id }}" class="fa fa-heart emtpy-heart"></i></a></li>
+                                  {% endif %}
+                                  <li><i class="fa fa-share-alt"></i></li>
+                                  <li><a href="javascript:void(0)">Facebook</a>,</li>
+                                  <li><a href="javascript:void(0)"> Twitter</a></li>
+                              {% else %}
+                                  <li id="likecount">{{ blog.likes.all.count }}</li>
                                   <li class="pl-3 pr-3"><i class="fa fa-heart emtpy-heart"></i></li>
                                   <li><i class="fa fa-share-alt"></i></li>
                                   <li><a href="javascript:void(0)">Facebook</a>,</li>
                                   <li><a href="javascript:void(0)"> Twitter</a></li>
-{#                              {% else %}#}
-{#                                  <li>{{ blog.likes.count }}</li>#}
-{#                                  <li class="pl-3 pr-3"><i class="fa fa-heart emtpy-heart"></i></li>#}
-{#                                  <li><i class="fa fa-share-alt"></i></li>#}
-{#                                  <li><a href="javascript:void(0)">Facebook</a>,</li>#}
-{#                                  <li><a href="javascript:void(0)"> Twitter</a></li>#}
-{#                              {% endif %}#}
+                              {% endif %}
                             </ul>
                           </div>
                         </div>
@@ -220,3 +224,7 @@
       </div>
     </section>
 {% endblock content %}
+
+{% block scripts %}
+    <script src="{% static 'js/like_blog.js' %}"></script>
+{% endblock scripts %}

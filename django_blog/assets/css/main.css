@@ -1,5 +1,13 @@
-.emtpy-heart{
+.emtpy-heart {
     color: #CDCDCD !important;
+}
+
+.fa-heart {
+    color: red !important;
+}
+
+.remove_top_margin {
+    margin-top: -15%;
 }
 
 .blog-posts .submit-comment .comment_section {
@@ -33,4 +41,22 @@
     max-height: 220px;
     max-width: 100%;
     min-width: 160%;
+}
+
+.btn-primary {
+    display: inline-block;
+    background-color: #f48840;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 12px 20px;
+    text-transform: uppercase;
+    transition: all .3s;
+    border: none;
+    outline: none;
+}
+
+.forLogin {
+    margin-top: 120px;
+    margin-bottom: 105px;
 }
