@@ -56,6 +56,19 @@
     outline: none;
 }
 
+.btn-primary-2 {
+    display: inline-block;
+    background-color: #f48840;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 9px 20px;
+    text-transform: uppercase;
+    transition: all .3s;
+    border: none;
+    outline: none;
+}
+
 .forLogin {
     margin-top: 120px;
     margin-bottom: 105px;
