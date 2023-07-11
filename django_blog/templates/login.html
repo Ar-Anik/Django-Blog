@@ -18,15 +18,23 @@
                       <h2>User Login</h2>
                     </div>
                     <div class="content">
-                      <form id="contact" action="" method="post">
+                      <form id="contact" action="" method="post" novalidate>
+                        {% csrf_token %}
                         <div class="row">
+                          {% if messages %}
+                              <div class="col-md-12 col-sm-12">
+                                {% include 'message.html' %}
+                              </div>
+                          {% endif %}
                           <div class="col-md-12 col-sm-12">
                             <fieldset>
-                              <input name="name" type="text" id="name" placeholder="Enter Name or Email" required="">
+                              <p class="error py-1 text-danger">{{ form.username.errors }}</p>
+                              <input name="username" type="text" id="username" placeholder="Enter Username">
                             </fieldset>
                           </div>
                           <div class="col-md-12 col-sm-12">
                             <fieldset>
+                              <p class="error py-1 text-danger">{{ form.password.errors }}</p>
                               <input name="password" type="password" id="password" placeholder="Enter Password">
                             </fieldset>
                           </div>
