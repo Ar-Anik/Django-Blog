@@ -23,19 +23,19 @@
                         <div class="row">
                           <div class="col-md-12 col-sm-12">
                             <fieldset>
-                              <p class="text-danger errors">{{ form.username.errors }}</p>
+                              <p class="py-1 text-danger">{{ form.username.errors }}</p>
                               <input name="username" type="text" {% if form.is_bound %} value="{{ form.username.value }}" {% endif %} id="username" placeholder="Enter Your UserName">
                             </fieldset>
                           </div>
                           <div class="col-md-12 col-sm-12">
                             <fieldset>
-                              <p class="text-danger errors">{{ form.email.errors }}</p>
+                              <p class="py-1 text-danger">{{ form.email.errors }}</p>
                               <input name="email" type="email" {% if form.is_bound %} value="{{ form.email.value }}" {% endif %} id="email" placeholder="Enter Your Email">
                             </fieldset>
                           </div>
                           <div class="col-md-12 col-sm-12">
                             <fieldset>
-                              <p class="text-danger errors">{{ form.password.errors }}</p>
+                              <p class="py-1 text-danger">{{ form.password.errors }}</p>
                               <input name="password" type="password" {% if form.is_bound %} value="{{ form.password.value }}" {% endif %} id="password" placeholder="Enter Your Password">
                             </fieldset>
                           </div>
