@@ -1,10 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Blog, Tag, Category, Comment, Reply
+from user_profile.models import User
 from django.core.paginator import PageNotAnInteger, EmptyPage, Paginator
-from .forms import TextForm
+from .forms import TextForm, AddBlogForm
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.db.models import Q
+from django.utils.text import slugify
+from django.contrib import messages
 # Create your views here.
 
 def home(request):
@@ -179,3 +182,118 @@ def search_blog(request):
 
     else:
         return redirect('home')
+
+@login_required(login_url='login')
+def my_blogs(request):
+    data = request.user.blog_user.all()
+    page = request.GET.get('page', 1)
+    paginator = Paginator(data, 6)
+
+    try:
+        blogs = paginator.page(page)
+    except EmptyPage:
+        blogs = paginator.page(1)
+        return redirect(request.path)
+    except PageNotAnInteger:
+        blogs = paginator.page(1)
+        return redirect(request.path)
+
+    context = {
+        "blogs": blogs,
+        "paginator": paginator
+    }
+
+    return render(request, "my_blogs.html", context)
+
+
+@login_required(login_url='login')
+def add_blog(request):
+    form = AddBlogForm()
+
+    if request.POST:
+        form = AddBlogForm(request.POST, request.FILES)
+        if form.is_valid():
+            tags = request.POST['tags'].split(',')
+            user = get_object_or_404(User, pk=request.user.pk)
+            category = get_object_or_404(Category, pk=request.POST['category'])
+            blog = form.save(commit=False)
+            blog.user = user
+            blog.category = category
+            blog.save()
+
+            for tag in tags:
+                tag_input = Tag.objects.filter(
+                    title__iexact=tag.strip(),
+                    slug=slugify(tag.strip())
+                )
+
+                if tag_input.exists():
+                    tg = tag_input.first()
+                    blog.tags.add(tg)
+
+                else:
+                    if tag != '':
+                        new_tag = Tag.objects.create(
+                            title=tag.strip(),
+                            slug=slugify(tag.strip())
+                        )
+                        blog.tags.add(new_tag)
+
+            messages.success(request, "Blog added Successsfully")
+            return redirect('blog_detail', slug=blog.slug)
+
+    context = {
+        'form': form,
+    }
+
+    return render(request, 'add_blog.html', context)
+
+@login_required(login_url='login')
+def update_blog(request, slug):
+    blog = get_object_or_404(Blog, slug=slug)
+    form = AddBlogForm(instance=blog)
+
+    if request.POST:
+        form = AddBlogForm(request.POST, request.FILES, instance=blog)
+
+        if form.is_valid():
+            if request.user.pk != blog.user.pk:
+                return redirect('home')
+
+            tags = request.POST['tags'].split(',')
+            user = get_object_or_404(User, pk=request.user.pk)
+            category = get_object_or_404(Category, pk=request.POST['category'])
+
+            blog = form.save(commit=False)
+            blog.user = user
+            blog.category = category
+
+            blog.save()
+
+            for tag in tags:
+                tag_exists = Tag.objects.filter(
+                    title__iexact=tag.strip(),
+                    slug=slugify(tag.strip())
+                )
+
+                if tag_exists.exists():
+                    tg = tag_exists.first()
+                    blog.tags.add(tg)
+
+                else:
+                    if tag != '':
+                        new_tag = Tag.objects.create(
+                            title=tag.strip(),
+                            slug=slugify(tag.strip())
+                        )
+                        blog.tags.add(new_tag)
+
+            messages.success(request, "Blog Update Successfully")
+            return redirect('blog_detail', slug=blog.slug)
+
+    context = {
+        'form': form,
+        'blog': blog
+    }
+
+    return render(request, 'update_blog.html', context)

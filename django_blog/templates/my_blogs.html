@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    My Blogs
+{% endblock title %}
+
+{% block content %}
+    <section class="my-blogs">
+        <div class="container-fluid">
+            <div class="row py-5">
+                {% if blogs %}
+                    {% for blog in blogs %}
+                        <div class="col-md-4 my-4">
+                            <div class="card">
+                                <img class="card-img-top img-fluid mx-auto my-auto" style="width: 90%; height: 320px"
+                                     src="{{ blog.banner.url }}" alt="Card image cap">
+                                <div class="card-body">
+                                    <p class="card-text d-flex flex-row">
+                                        {{ blog.title|truncatechars:20 }}
+                                        <a class="px-2 ml-auto" href="{% url 'update_blog' blog.slug %}">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                        <a class="px-2" href="">
+                                            <i class="fa fa-trash text-danger"></i>
+                                        </a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        <div class="row py-2 justify-content-center">
+            <div class="col-md-8">
+                {% include 'paginations.html' %}
+            </div>
+        </div>
+        </div>
+    </section>
+{% endblock content %}

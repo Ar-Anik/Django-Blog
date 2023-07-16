@@ -1,6 +1,7 @@
 from django.db import models
 from user_profile.models import User
 from django.utils.text import slugify
+from .slug import generate_unique_slug
 # Create your models here.
 
 class Category(models.Model):
@@ -42,8 +43,15 @@ class Blog(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.title)
-        super().save(*args, **kwargs)
+        updating = self.pk is not None
+
+        if updating:
+            self.slug = generate_unique_slug(self, self.title, update=True)
+            super().save(*args, **kwargs)
+
+        else:
+            self.slug = generate_unique_slug(self, self.title)
+            super().save(*args, **kwargs)
 
 class Comment(models.Model):
     user = models.ForeignKey(User, related_name='user_comments', on_delete=models.CASCADE)

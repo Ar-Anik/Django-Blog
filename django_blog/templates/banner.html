@@ -1,8 +1,8 @@
 {% load static %}
-<div class="main-banner header-text">
+<div class="main-banner header-text data-interval">
     <div class="container-fluid">
         <div class="owl-banner owl-carousel">
-            {% for blog in blogs|slice:"6" %}
+            {% for blog in blogs|slice:"7" %}
                 <div class="item">
                 <img style="height: 450px" src="{{ blog.banner.url }}" alt="">
                 <div class="item-content">

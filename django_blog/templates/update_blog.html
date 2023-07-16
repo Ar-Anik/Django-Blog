@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Update Blog
+{% endblock title %}
+
+{% block content %}
+<section class="add-blog">
+    <div class="container">
+        <div class="row py-5 justify-content-center">
+          <div class="col-md-10">
+              <form action="{% url 'update_blog' blog.slug %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="title">Blog Title</label>
+                    <input class="form-control" type="text" name="title" value="{{ form.instance.title }}" placeholder="Enter Blog Title">
+                    <p class="text-danger py-1 errorlist">{{ form.instance.title.errors }}</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="category">Blog Category</label>
+                    <select class="form-control" name="category" id="category_id">
+                        {% for category in categories %}
+                            <option value="{{ category.id }}" {% if form.instance.category.pk == category.pk %} selected {% endif %}>{{ category.title }}</option>
+                        {% endfor %}
+                    </select>
+                    <p class="text-danger py-1 errorlist">{{ form.instance.category.errors }}</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Blog Description</label>
+                    <textarea class="form-control" name="description" cols="30" rows="10" placeholder="Please Enter Description">{{ form.instance.description|safe }}</textarea>
+                    <p class="text-danger py-1 errorlist">{{ form.instance.description.errors }}</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="banner">Blog Banner</label>
+                    <input class="form-control" type="file" name="banner" value="{{ form.instance.banner.url }}">
+                    <p class="text-danger py-1 errorlist">{{ form.instance.banner.errors }}</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="tags">Blog Tag</label>
+                    <input class="form-control" name="tags" type="text" placeholder="Enter Blog Tag" value="{{ form.instance.tag_blog.all }}">
+                    <p class="text-danger py-1 errorlist">{{ form.instance.tags.errors }}</p>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary btn-block">Update</button>
+                </div>
+            </form>
+          </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}
