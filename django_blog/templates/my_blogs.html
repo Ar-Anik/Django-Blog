@@ -7,6 +7,11 @@
 {% block content %}
     <section class="my-blogs">
         <div class="container-fluid">
+            {% if messages %}
+                <div class="col-md-6">
+                    {% include 'message.html' %}
+                </div>
+            {% endif %}
             <div class="row py-5">
                 {% if blogs %}
                     {% for blog in blogs %}
@@ -20,7 +25,7 @@
                                         <a class="px-2 ml-auto" href="{% url 'update_blog' blog.slug %}">
                                             <i class="fa fa-edit"></i>
                                         </a>
-                                        <a class="px-2" href="">
+                                        <a class="px-2" href="?delete={{ blog.pk }}">
                                             <i class="fa fa-trash text-danger"></i>
                                         </a>
                                     </p>

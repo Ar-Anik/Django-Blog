@@ -30,7 +30,7 @@
                         <li><a href="javascript:void(0)">{{ blog.created_date }}</a></li>
                         <li><a href="javascript:void(0)">{{ blog.blog_comment.all.count }} Comments</a></li>
                       </ul>
-                      <p>{{ blog.description }}</p>
+                      <p>{{ blog.description|safe }}</p>
                       <div class="post-options">
                         <div class="row">
                           <div class="col-6">

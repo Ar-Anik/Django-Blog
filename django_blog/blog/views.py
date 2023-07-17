@@ -188,6 +188,17 @@ def my_blogs(request):
     data = request.user.blog_user.all()
     page = request.GET.get('page', 1)
     paginator = Paginator(data, 6)
+    delete = request.GET.get('delete', None)
+
+    if delete:
+        blog = get_object_or_404(Blog, pk=delete)
+
+        if request.user.pk != blog.user.pk:
+            return redirect('home')
+
+        blog.delete()
+        messages.success(request, "Blog Successfully Delete")
+        return redirect('my_blogs')
 
     try:
         blogs = paginator.page(page)

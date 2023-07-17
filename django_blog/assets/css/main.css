@@ -91,3 +91,7 @@
 .perror {
     margin-left: -23px;
 }
+
+#cke_id_description {
+    width: 107% !important;
+}

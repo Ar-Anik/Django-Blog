@@ -8,8 +8,9 @@
 <section class="add-blog">
     <div class="container">
         <div class="row py-5 justify-content-center">
-          <div class="col-md-10">
+          <div class="col-md-9">
               <form action="{% url 'add_blog' %}" method="POST" enctype="multipart/form-data">
+                {{ form.media }}
                 {% csrf_token %}
                 <div class="form-group">
                     <label for="title">Blog Title</label>
@@ -29,7 +30,7 @@
 
                 <div class="form-group">
                     <label for="description">Blog Description</label>
-                    <textarea class="form-control" name="description" cols="30" rows="10" placeholder="Please Enter Description"></textarea>
+                    {{ form.description|safe }}
                     <p class="text-danger py-1 errorlist">{{ form.description.errors }}</p>
                 </div>
 
