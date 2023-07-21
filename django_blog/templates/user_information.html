@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title%}
+    User Information
+{% endblock title %}
+
+{% block content %}
+<section class="profile">
+    <div class="container-fluid">
+        <div class="row py-5">
+            <div class="col-md-4">
+                <div class="text-center">
+                    <img class="rounded rounded-circle profile-picture" src="{{ account.get_profile_image }}" alt="Image Not Found" />
+                    <ul class="text-center py-3">
+                        <li class="py-2">
+                            <span>Posts: <strong>{{ account.blog_user.count }}</strong></span>
+                        </li>
+                        <li class="py-2">
+                            <span>Followers:<strong>{{ account.followers.all.count }}</strong></span>
+                        </li>
+                        <li class="py-2">
+                            <span>Following: <strong>{{ account.user_follows.all.count }}</strong></span>
+                        </li>
+                        <li class="py-2">
+                            {% if following %}
+                                <a class="btn btn-primary text-decoration-none" href="{% url 'follow_or_unfollow' account.id %}">Unfollow</a>
+                            {% else %}
+                                <a class="btn btn-primary text-decoration-none" href="{% url 'follow_or_unfollow' account.id %}">Follow</a>
+                            {% endif %}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row pt-1 mb-2">
+                <div class="col-md-12 mb-2">
+                    <h4 class="text-monospace text-center"><span style="text-transform:uppercase;">{{ account.username }}<span>'s Blog</h4>
+                </div>
+                <div class="col-md-12">
+                    <ul class="list-group list-group-flush">
+                    {% for blog in account.blog_user.all %}
+                        <li class="list-group-item py-3">
+                            <a href="{% url 'blog_detail' blog.slug %}">
+                                <p>{{ blog.title }}</p>
+                                <p>{{ blog.created_date }}</p>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

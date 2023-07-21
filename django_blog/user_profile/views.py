@@ -5,8 +5,8 @@ from django.contrib.auth import login, logout, authenticate
 from .decorators import not_logged_in_required
 from django.views.decorators.cache import never_cache
 from django.contrib.auth.decorators import login_required
-from .models import User
-
+from .models import User, Follow
+from django.core.paginator import PageNotAnInteger, EmptyPage, Paginator
 # Create your views here.
 
 @never_cache
@@ -103,3 +103,45 @@ def change_profile_picture(request):
             messages.success(request, "Profile Image Updated Successfully")
 
     return redirect('profile')
+
+def view_user_information(request, username):
+    account = get_object_or_404(User, username=username)
+    following = False
+
+    if request.user.is_authenticated:
+
+        if request.user.id == account.id:
+            return redirect('profile')
+
+        followers = account.followers.filter(
+            followed_by__id=request.user.id
+        )
+
+        if followers.exists():
+            following = True
+
+    context = {
+        "account": account,
+        "following": following,
+    }
+
+    return render(request, 'user_information.html', context)
+
+@login_required(login_url='login')
+def follow_or_unfollow(request, user_id):
+    followed = get_object_or_404(User, id=user_id)
+    followed_by = get_object_or_404(User, id=request.user.id)
+
+    follow, create = Follow.objects.get_or_create(
+        followed=followed,
+        followed_by=followed_by
+    )
+
+    if create:
+        followed.followers.add(follow)
+
+    else:
+        followed.followers.remove(follow)
+        follow.delete()
+
+    return redirect('view_user_information', username=followed.username)

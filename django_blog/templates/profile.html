@@ -16,10 +16,10 @@
                             <span>Posts: <strong>{{ account.blog_user.count }}</strong></span>
                         </li>
                         <li class="py-2">
-                            <span>Followers:<strong>100</strong></span>
+                            <span>Followers:<strong>{{ account.followers.all.count }}</strong></span>
                         </li>
                         <li class="py-2">
-                            <span>Following: <strong>100</strong></span>
+                            <span>Following: <strong>{{ account.user_follows.all.count }}</strong></span>
                         </li>
                     </ul>
                 </div>
