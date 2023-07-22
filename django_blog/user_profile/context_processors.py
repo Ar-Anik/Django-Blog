@@ -13,4 +13,6 @@ def user_notification(request):
         context['notifications'] = notification
         context['unseen'] = unseen.count()
 
+        print("Notification : ", notification)
+
     return context
