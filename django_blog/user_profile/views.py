@@ -6,7 +6,7 @@ from .decorators import not_logged_in_required
 from django.views.decorators.cache import never_cache
 from django.contrib.auth.decorators import login_required
 from .models import User, Follow
-from django.core.paginator import PageNotAnInteger, EmptyPage, Paginator
+from notification.models import Notification
 # Create your views here.
 
 @never_cache
@@ -145,3 +145,16 @@ def follow_or_unfollow(request, user_id):
         follow.delete()
 
     return redirect('view_user_information', username=followed.username)
+
+@login_required(login_url='login')
+def user_notification(request):
+    notifications = Notification.objects.filter(
+        user = request.user,
+        is_seen = False
+    )
+
+    for notification in notifications:
+        notification.is_seen = True
+        notification.save()
+
+    return render(request, 'notification.html')

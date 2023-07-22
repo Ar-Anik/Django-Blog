@@ -19,7 +19,7 @@ class Notification(models.Model):
     is_seen = models.BooleanField(default=False)
     notification_types = models.CharField(max_length=20, choices=list(zip(NOTIFICATION_TYPES, NOTIFICATION_TYPES)))
 
-    created_by = models.DateTimeField(auto_now_add=True)
+    created_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.text
