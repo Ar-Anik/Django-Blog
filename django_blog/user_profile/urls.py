@@ -11,4 +11,5 @@ urlpatterns = [
     path('follow_or_unfollow/<int:user_id>/',follow_or_unfollow, name='follow_or_unfollow'),
     path('user_notification/', user_notification, name="user_notification"),
     path('mute_and_unmuted/<int:user_id>/', mute_and_unmuted, name='mute_and_unmuted'),
+    path('activate/<uidb64>/<token>', activate, name='activate'),
 ]

@@ -1,12 +1,20 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import UserRegistrationForm, LoginForm, UserProfileUpdateForm, ProfilePictureUpdateForm
 from django.contrib import messages
-from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth import login, logout, authenticate, get_user_model
 from .decorators import not_logged_in_required
 from django.views.decorators.cache import never_cache
 from django.contrib.auth.decorators import login_required
 from .models import User, Follow
 from notification.models import Notification
+
+from django.template.loader import render_to_string
+from django.contrib.sites.shortcuts import get_current_site
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from .tokens import account_activation_token
+from django.core.mail import EmailMessage
+from django.utils.encoding import force_bytes, force_str
+
 # Create your views here.
 
 @never_cache
@@ -39,6 +47,42 @@ def logut_user(request):
     logout(request)
     return redirect('home')
 
+def activate(request, uidb64, token):
+    user = get_user_model()
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = user.objects.get(pk=uid)
+    except:
+        user = None
+
+    if user is not None and account_activation_token.check_token(user, token):
+        user.is_active = True
+        user.save()
+
+        messages.success(request, "Your profile is activated")
+        return redirect('login')
+
+    else:
+        messages.error(request, "Activation link is invalid")
+
+    return redirect('home')
+
+def activateEmail(request, user, to_email):
+    mail_subject = 'Activate Your User Account.'
+    message = render_to_string("account_activation_email.html", {
+        'user': user.username,
+        'domain': get_current_site(request).domain,
+        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+        'token': account_activation_token.make_token(user),
+        'protocol': 'https' if request.is_secure() else 'http'
+    })
+    email = EmailMessage(mail_subject, message, to=[to_email])
+
+    if email.send():
+        messages.success(request, f'Dear <b>{user}</b>, Please goto your email address for active your profile.')
+    else:
+        messages.error(request, f'There is a problem sending email.')
+
 
 @never_cache
 @not_logged_in_required
@@ -47,12 +91,15 @@ def registration_user(request):
 
     if request.POST:
         form = UserRegistrationForm(request.POST)
+
         if form.is_valid():
             user = form.save(commit=False)
             user.set_password(form.cleaned_data.get('password'))
+            user.is_active = False
             user.save()
 
-            messages.success(request, "Registration Successful")
+            activateEmail(request, user, form.cleaned_data.get('email'))
+
             return redirect('login')
 
         # else:
