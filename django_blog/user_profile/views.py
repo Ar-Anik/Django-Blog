@@ -14,6 +14,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from .tokens import account_activation_token
 from django.core.mail import EmailMessage
 from django.utils.encoding import force_bytes, force_str
+from django.utils.safestring import mark_safe
 
 # Create your views here.
 
@@ -32,8 +33,11 @@ def login_user(request):
             )
 
             if user:
-                login(request, user)
-                return redirect('home')
+                if user.is_active:
+                    login(request, user)
+                    return redirect('home')
+                else:
+                    messages.warning(request, 'Wrong Credentials')
             else:
                 messages.warning(request, "Wrong Credentials")
 
@@ -79,7 +83,8 @@ def activateEmail(request, user, to_email):
     email = EmailMessage(mail_subject, message, to=[to_email])
 
     if email.send():
-        messages.success(request, f'Dear <b>{user}</b>, Please goto your email address for active your profile.')
+        message = f'Dear <strong>{user}</strong>, Please go to your email address to activate your profile.'
+        messages.success(request, mark_safe(message))
     else:
         messages.error(request, f'There is a problem sending email.')
 
